@@ -1,4 +1,4 @@
-public enum SkillsEnum
+public enum Skills
 {
     IncreaseSpeed,
     IncreaseAttack,

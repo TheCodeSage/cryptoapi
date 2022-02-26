@@ -1,1 +1,1 @@
-public record Creature(string Name, string Image, Stats Stats, Attributes Attributes);
+public record Creature(string Name, string Image, int Tier, Stats Stats, Attributes? Attributes);

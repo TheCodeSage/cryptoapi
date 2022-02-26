@@ -13,7 +13,8 @@ public record BattleCreature : Creature
     //which is calculated from the difference in creatures speed
     private double currentRatio;
 
-    public BattleCreature(Creature creature) : base(creature.Name, creature.Image, creature.Stats, creature.Attributes)
+    public BattleCreature(Creature creature) :
+     base(creature.Name, creature.Image, creature.Tier, creature.Stats, creature.Attributes)
     {
         currentHealth = creature.Stats.Health;
         currentDefense = creature.Stats.Defense;
@@ -54,17 +55,17 @@ public record BattleCreature : Creature
         {
             switch (Stats.Skill)
             {
-                case SkillsEnum.IncreaseAttack:
+                case Skills.IncreaseAttack:
                     currentAttackMin += Stats.AttackMin * .25;
                     currentAttackMax += Stats.AttackMax * .25;
                     break;
-                case SkillsEnum.IncreaseDefense:
+                case Skills.IncreaseDefense:
                     currentDefense += Stats.Defense * .25;
                     break;
-                case SkillsEnum.IncreaseSpeed:
+                case Skills.IncreaseSpeed:
                     currentRatio += currentRatio * .25;
                     break;
-                case SkillsEnum.RecoverHealth:
+                case Skills.RecoverHealth:
                     var newHealth = currentHealth + Stats.Health * .10;
                     currentHealth = newHealth > Stats.Health ?
                     Stats.Health :
