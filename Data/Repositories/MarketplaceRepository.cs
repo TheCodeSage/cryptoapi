@@ -1,3 +1,8 @@
+using cryptoapi.Data.Models;
+using cryptoapi.Data.Interfaces;
+
+namespace cryptoapi.Data.Repositories;
+
 public class MarketplaceRepository : IRepository<MarketplaceCreature>
 {
     private readonly IEnumerable<MarketplaceCreature> staticData = MockData.GetMockMarketplaceCreatures();

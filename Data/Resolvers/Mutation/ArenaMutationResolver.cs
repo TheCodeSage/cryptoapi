@@ -1,3 +1,7 @@
+using cryptoapi.Data.Models;
+
+namespace cryptoapi.Data.Resolvers.Mutation;
+
 [ExtendObjectType(name: "Mutation")]
 public class ArenaMutationResolver
 {

@@ -1,3 +1,6 @@
+using cryptoapi.Data.Models;
+
+namespace cryptoapi.Data.Resolvers.Mutation;
 public class BattleSimulator
 {
     public static string Simulate(Creature creature1, Creature creature2)

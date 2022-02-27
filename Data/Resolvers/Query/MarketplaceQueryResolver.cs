@@ -1,3 +1,9 @@
+using cryptoapi.Data.Resolvers;
+using cryptoapi.Data.Interfaces;
+using cryptoapi.Data.Models;
+
+namespace cryptoapi.Data.Resolvers;
+
 [ExtendObjectType(name: "Query")]
 public class MarketplaceQueryResolver
 {

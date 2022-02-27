@@ -1,4 +1,4 @@
-public enum ImageRarityLayer
+public enum ImageLayer
 {
     Creatures,
     Backgrounds,

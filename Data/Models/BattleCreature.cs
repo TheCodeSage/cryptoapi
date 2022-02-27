@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices.ComTypes;
+namespace cryptoapi.Data.Models;
 public record BattleCreature : Creature
 {
     public bool IsAlive => currentHealth > 0;
@@ -14,7 +14,7 @@ public record BattleCreature : Creature
     private double currentRatio;
 
     public BattleCreature(Creature creature) :
-     base(creature.Name, creature.Image, creature.Tier, creature.Stats, creature.Attributes)
+     base(creature.Name, creature.Image, creature.Tier, creature.Stats, creature.Traits)
     {
         currentHealth = creature.Stats.Health;
         currentDefense = creature.Stats.Defense;
