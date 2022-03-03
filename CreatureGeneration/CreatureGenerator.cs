@@ -10,14 +10,10 @@ public class CreatureGenerator
 
     public Creature Generate()
     {
-        var rarityDictionary = rollRarityDictionary();
-        var layerDictionary = getImagePaths(rarityDictionary);
-        var img = drawImage(layerDictionary);
-        var imageBase64 = getBase64(img);
-        var traits = getTraits(layerDictionary, rarityDictionary);
-        var stats = generateStats(creatureType);
+        var rarityMap = rollRarityDictionary();
+        var layerMap = getImagePaths(rarityMap);
 
-        return new Creature(creatureType.ToString(), imageBase64, 1, stats, traits);
+        return createCreature(rarityMap, layerMap);
     }
 
     public Creature Fuse(Creature c1, Creature c2)
@@ -25,26 +21,37 @@ public class CreatureGenerator
         if (c1.Name != c2.Name)
             throw new Exception($"Cannot fuse unlike creatures: {c1.Name} is not {c1.Name}");
 
-        var minRarity = getFusedMinRarityDictionary(c1, c2);
-        var rarityDictionary = rollRarityDictionary(minRarity);
-        //TODO: Get creature type
-        var layerDictionary = getImagePaths(rarityDictionary);
+        creatureType = c1.Name;
+        var minRarityMap = getFusedMinRarityDictionary(c1, c2);
+        var rarityMap = rollRarityDictionary(minRarityMap);
+        var layerMap = getImagePaths(rarityMap);
 
-        return c1;
+        return createCreature(rarityMap, layerMap);
     }
 
+    //Create creature object from rarity map and layer map
+    private Creature createCreature(Dictionary<ImageLayer, Rarity> rarityMap, Dictionary<ImageLayer, string> layerMap)
+    {
+        var img = drawImage(layerMap);
+        var imageBase64 = getBase64(img);
+        var traits = getTraits(layerMap, rarityMap);
+        var stats = generateStats(creatureType);
+
+        return new Creature(creatureType.ToString(), imageBase64, 1, stats, traits);
+    }
+
+    //Get minimum rarity based off existing layer rarity comparison
     private Dictionary<ImageLayer, Rarity> getFusedMinRarityDictionary(Creature c1, Creature c2)
     {
         var minRarityDictionary = new Dictionary<ImageLayer, Rarity>();
-        var availableTraits = c1.Traits.Concat(c2.Traits).DistinctBy(i => i.layer);
+        var availableLayers = c1.Traits.Concat(c2.Traits).DistinctBy(i => i.layer).Select(i => i.layer);
+        var c1LayerMap = c1.Traits.ToDictionary(i => i.layer, i => i.rarity);
+        var c2LayerMap = c2.Traits.ToDictionary(i => i.layer, i => i.rarity);
 
-        foreach (var trait in availableTraits)
+        foreach (var layer in availableLayers)
         {
-            var c1TraitRarity = c1.Traits.FirstOrDefault(i => i.layer == trait.layer)?.rarity;
-            var c2TraitRarity = c2.Traits.FirstOrDefault(i => i.layer == trait.layer)?.rarity;
-
-            var greaterRarity = Math.Max((int)c1TraitRarity, (int)c2TraitRarity);
-            minRarityDictionary.Add(trait.layer, (Rarity)greaterRarity);
+            var greaterRarity = Math.Max((int)c1LayerMap[layer], (int)c2LayerMap[layer]);
+            minRarityDictionary.Add(layer, (Rarity)greaterRarity);
         }
 
         return minRarityDictionary;
@@ -102,6 +109,22 @@ public class CreatureGenerator
         var dir = $"{Directory.GetCurrentDirectory()}\\CreatureGeneration";
         var creaturePath = string.Empty;
 
+        if (!string.IsNullOrWhiteSpace(creatureType))
+        {
+            var creatureRarityDir = Directory.GetDirectories($"{dir}\\Creatures");
+            foreach (var creatureRarity in creatureRarityDir)
+            {
+                var relevantDirs = Directory.GetDirectories(creatureRarity);
+                foreach (var relevantDir in relevantDirs)
+                {
+                    creaturePath = relevantDir;
+                    break;
+                }
+                if (!string.IsNullOrWhiteSpace(creaturePath))
+                    break;
+            }
+        }
+
         foreach (var layer in rarityLayers)
         {
             var path = string.Empty;
@@ -140,7 +163,7 @@ public class CreatureGenerator
     }
 
     //Assign layers a rarity
-    private Dictionary<ImageLayer, Rarity> rollRarityDictionary(Dictionary<ImageLayer, Rarity> minRarityDictionary = null)
+    private Dictionary<ImageLayer, Rarity> rollRarityDictionary(Dictionary<ImageLayer, Rarity>? minRarityDictionary = null)
     {
         var rarityDictionary = new Dictionary<ImageLayer, Rarity>();
 
@@ -198,7 +221,7 @@ public class CreatureGenerator
         return pathToItem.Substring(startOfNameIndex, pathToItem.Length - startOfNameIndex);
     }
 
-    private Rarity getRarityFromDictionary(Dictionary<ImageLayer, Rarity> dictionary, ImageLayer layer)
+    private Rarity getRarityFromDictionary(Dictionary<ImageLayer, Rarity>? dictionary, ImageLayer layer)
     {
         //TODO: Avoid dictionary nullable
         if (dictionary == null)
