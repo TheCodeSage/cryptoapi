@@ -1,4 +1,12 @@
 {
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:54844/",
+      "sslPort": 44301
+    }
+  },
   "profiles": {
     "cryptoapi": {
       "commandName": "Project",
@@ -6,7 +14,7 @@
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
-      "applicationUrl": "https://localhost:3000",
+      "applicationUrl": "https://localhost:3001",
       "dotnetRunMessages": true
     },
     "IIS Express": {

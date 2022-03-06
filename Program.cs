@@ -18,14 +18,20 @@ builder.Services
 .AddType<ArenaMutationResolver>()
 .AddType<CreatureGeneratorResolver>();
 
+builder.Services.AddCors(option => 
+{
+    option.AddPolicy("allowedOrigin",
+        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()
+        );
+});
+
 var app = builder.Build();
 
+app.UseCors("allowedOrigin");
 app.UseRouting();
 
 app.UseEndpoints(endpoints =>
   endpoints.MapGraphQL());
-
-app.UseGraphQLPlayground();
 
 #if DEBUG
 #pragma warning disable CS4014 
